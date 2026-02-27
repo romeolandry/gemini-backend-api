@@ -1,6 +1,9 @@
 api_platform:
-    title: Hello API Platform
+    title: KI Backend API
+    description: 'This Microservice will provide Access to KI-Model like Gemini'
     version: 1.0.0
+    show_webby: false
+
     defaults:
         stateless: true
         cache_headers:

@@ -6,6 +6,8 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         users_in_memory: { memory: null }
+        hwi_provider:
+            id: hwi_oauth.user.provider
 
     firewalls:
         dev:
@@ -13,8 +15,28 @@ security:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
         main:
-            lazy: true
-            provider: users_in_memory
+                    lazy: true
+
+                    # Define the path handling the logout and where to redirect
+                    logout:
+                        path: /logout
+                        target: /
+
+                    oauth:
+                        # Again, define the same path as in the Google Cloud Console
+                        resource_owners:
+                            google: "/login/with-google"
+                        # This is the route that will trigger the OAuth login process
+                        login_path: /connect/google
+                        use_forward: false
+                        failure_path: /login
+
+                        # Service defined in HWI OAuth bundle to handle OAuth
+                        oauth_user_provider:
+                            service: hwi_oauth.user.provider
+
+                    # Key of the provider defined earlier
+                    provider: hwi_provider
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -26,6 +48,9 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/doc, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
+        # - { path: ^/(.+), roles: PUBLIC_ACCESS }
 
 when@test:
     security:

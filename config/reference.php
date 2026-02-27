@@ -148,7 +148,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         cookie_name?: scalar|Param|null, // The name of the cookie to use when using stateless protection. // Default: "csrf-token"
  *     },
  *     form?: bool|array{ // Form configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         csrf_protection?: bool|array{
  *             enabled?: scalar|Param|null, // Default: null
  *             token_id?: scalar|Param|null, // Default: null
@@ -465,7 +465,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     disallow_search_engine_index?: bool|Param, // Enabled by default when debug is enabled. // Default: true
  *     http_client?: bool|array{ // HTTP Client configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         max_host_connections?: int|Param, // The maximum number of connections to a single host.
  *         default_options?: array{
  *             headers?: array<string, mixed>,
@@ -815,6 +815,32 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             lock_factory?: scalar|Param|null, // The service ID of the lock factory used by the login rate limiter (or null to disable locking). // Default: null
  *             cache_pool?: string|Param, // The cache pool to use for storing the limiter state // Default: "cache.rate_limiter"
  *             storage_service?: string|Param, // The service ID of a custom storage implementation, this precedes any configured "cache_pool" // Default: null
+ *         },
+ *         oauth?: array{
+ *             provider?: scalar|Param|null,
+ *             remember_me?: bool|Param, // Default: true
+ *             success_handler?: scalar|Param|null,
+ *             failure_handler?: scalar|Param|null,
+ *             check_path?: scalar|Param|null, // Default: "/login_check"
+ *             use_forward?: bool|Param, // Default: false
+ *             login_path?: scalar|Param|null,
+ *             always_use_default_target_path?: bool|Param, // Default: false
+ *             default_target_path?: scalar|Param|null, // Default: "/"
+ *             target_path_parameter?: scalar|Param|null, // Default: "_target_path"
+ *             use_referer?: bool|Param, // Default: false
+ *             failure_path?: scalar|Param|null, // Default: null
+ *             failure_forward?: bool|Param, // Default: false
+ *             failure_path_parameter?: scalar|Param|null, // Default: "_failure_path"
+ *             oauth_user_provider?: array{
+ *                 orm?: array{
+ *                     class?: scalar|Param|null,
+ *                     manager_name?: scalar|Param|null, // Default: null
+ *                     properties?: array<string, scalar|Param|null>,
+ *                 },
+ *                 service?: scalar|Param|null,
+ *                 oauth?: scalar|Param|null,
+ *             },
+ *             resource_owners?: array<string, scalar|Param|null>,
  *         },
  *         x509?: array{
  *             provider?: scalar|Param|null,
@@ -1411,7 +1437,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         validation_error_resource_class?: scalar|Param|null, // The class used to represent validation errors in the OpenAPI documentation. // Default: null
  *     },
  *     maker?: bool|array{
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *     },
  *     exception_to_status?: array<string, int|Param>,
  *     formats?: array<string, array{ // Default: {"jsonld":{"mime_types":["application/ld+json"]}}
@@ -1516,6 +1542,46 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         ...<mixed>
  *     },
  * }
+ * @psalm-type MakerConfig = array{
+ *     root_namespace?: scalar|Param|null, // Default: "App"
+ *     generate_final_classes?: bool|Param, // Default: true
+ *     generate_final_entities?: bool|Param, // Default: false
+ * }
+ * @psalm-type HwiOauthConfig = array{
+ *     firewall_names?: list<scalar|Param|null>,
+ *     target_path_parameter?: scalar|Param|null, // Default: null
+ *     target_path_domains_whitelist?: list<scalar|Param|null>,
+ *     use_referer?: bool|Param, // Default: false
+ *     failed_use_referer?: bool|Param, // Default: false
+ *     failed_auth_path?: scalar|Param|null, // Default: "hwi_oauth_connect"
+ *     grant_rule?: scalar|Param|null, // Default: "IS_AUTHENTICATED_REMEMBERED"
+ *     connect?: array{
+ *         confirmation?: bool|Param, // Default: true
+ *         account_connector?: scalar|Param|null,
+ *         registration_form_handler?: scalar|Param|null,
+ *         registration_form?: scalar|Param|null,
+ *     },
+ *     resource_owners?: array<string, array{ // Default: []
+ *         base_url?: scalar|Param|null,
+ *         access_token_url?: scalar|Param|null,
+ *         authorization_url?: scalar|Param|null,
+ *         request_token_url?: scalar|Param|null,
+ *         revoke_token_url?: scalar|Param|null,
+ *         infos_url?: scalar|Param|null,
+ *         client_id?: scalar|Param|null,
+ *         client_secret?: scalar|Param|null,
+ *         realm?: scalar|Param|null,
+ *         scope?: scalar|Param|null,
+ *         user_response_class?: scalar|Param|null,
+ *         service?: scalar|Param|null,
+ *         class?: scalar|Param|null,
+ *         type?: scalar|Param|null,
+ *         use_authorization_to_get_token?: scalar|Param|null,
+ *         paths?: array<string, mixed>,
+ *         options?: array<string, scalar|Param|null>,
+ *         ...<mixed>
+ *     }>,
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1527,6 +1593,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     doctrine_migrations?: DoctrineMigrationsConfig,
  *     nelmio_cors?: NelmioCorsConfig,
  *     api_platform?: ApiPlatformConfig,
+ *     hwi_oauth?: HwiOauthConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1538,6 +1605,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
+ *         maker?: MakerConfig,
+ *         hwi_oauth?: HwiOauthConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1550,6 +1619,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
+ *         hwi_oauth?: HwiOauthConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1562,6 +1632,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
+ *         hwi_oauth?: HwiOauthConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

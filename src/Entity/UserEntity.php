@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\RecapsEntity;
+use App\Entity\Traits\TimeStampTrait;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class UserEntity
 {
+    use TimeStampTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

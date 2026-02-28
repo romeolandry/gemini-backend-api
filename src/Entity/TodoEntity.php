@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimeStampTrait;
 use App\Repository\TodoEntityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TodoEntityRepository::class)]
 class TodoEntity
 {
+
+    use TimeStampTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Entity\Traits\TimeStampTrait;
 use App\Entity\UserEntity;
 use App\Repository\RecapsRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 class RecapsEntity
 {
+
+    use TimeStampTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

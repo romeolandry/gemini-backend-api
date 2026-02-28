@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Entity\Traits\TimeStampTrait;
 use App\Repository\TodoListRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 class TodoList
 {
+    use TimeStampTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

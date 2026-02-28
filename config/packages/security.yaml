@@ -48,8 +48,14 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        ## /login/with-google
+        ## /login
+        - { path: ^/google_access_token, role: PUBLIC_ACCESS}
+        - { path: ^/login, roles: PUBLIC_ACCESS}
+        - { path: ^/login/with-google, roles: PUBLIC_ACCESS}
+        - { path: ^/connect/google, roles: PUBLIC_ACCESS}
         - { path: ^/api/doc, roles: ROLE_USER }
-        - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
         # - { path: ^/(.+), roles: PUBLIC_ACCESS }
 
 when@test:

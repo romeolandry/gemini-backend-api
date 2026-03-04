@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+
 use App\Entity\Traits\TimeStampTrait;
 use App\Repository\TodoEntityRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +27,7 @@ class TodoEntity
     #[ORM\ManyToOne(inversedBy: 'todos')]
     #[ORM\JoinColumn(nullable: false)]
     private ?TodoList $todoList = null;
+
 
     public function getId(): ?int
     {

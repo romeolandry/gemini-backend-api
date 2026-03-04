@@ -5,10 +5,16 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Traits\TimeStampTrait;
 use App\Repository\TodoListRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TodoListRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class TodoList
 {
     use TimeStampTrait;
@@ -16,10 +22,34 @@ class TodoList
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $title = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'id',nullable: false)]
+    #[Groups(['read', 'write'])]
+    private ?UserEntity $user = null;
+
+    /**
+     * @var Collection<int, TodoEntity>
+     */
+    #[ORM\OneToMany(
+        targetEntity: TodoEntity::class,
+        mappedBy: 'todoList',
+        orphanRemoval: true
+    )]
+    #[Groups(['read', 'write'])]
+    private Collection $todos;
+
+    public function __construct()
+    {
+        $this->todos = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -34,6 +64,48 @@ class TodoList
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getUser(): ?UserEntity
+    {
+        return $this->user;
+    }
+
+    public function setUser(?UserEntity $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TodoEntity>
+     */
+    public function getTodos(): Collection
+    {
+        return $this->todos;
+    }
+
+    public function addTodo(TodoEntity $todo): static
+    {
+        if (!$this->todos->contains($todo)) {
+            $this->todos->add($todo);
+            $todo->setTodoList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTodo(TodoEntity $todo): static
+    {
+        if ($this->todos->removeElement($todo)) {
+            // set the owning side to null (unless already changed)
+            if ($todo->getTodoList() === $this) {
+                $todo->setTodoList(null);
+            }
+        }
 
         return $this;
     }

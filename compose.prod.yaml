@@ -1,0 +1,22 @@
+---
+# Production environment override
+services:
+  php:
+    env_file:
+        - .env.prod
+    build:
+      context: .
+      target: frankenphp_prod
+    environment:
+      APP_SECRET: ${APP_SECRET}
+      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_ROOT_PWD:-!rootpwd!}
+      MARIADB_USER: ${MARIADB_USER:-!user!}
+      MARIADB_PASSWORD: ${DATABASE_PWD:-!pwd!}
+      MARIADB_DATABASE: ${DATABASE_NAME:-!db!}

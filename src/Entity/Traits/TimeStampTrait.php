@@ -6,6 +6,7 @@ namespace App\Entity\Traits;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 trait TimeStampTrait
 {
 
@@ -13,7 +14,7 @@ trait TimeStampTrait
     private DateTime $createdat;
 
     #[ORM\Column]
-    private DateTime $updatedai;
+    private DateTime $updatedat;
 
 
     /**
@@ -41,26 +42,36 @@ trait TimeStampTrait
     }
 
     /**
-     * Get the value of updatedai
+     * Get the value of updatedat
      *
      * @return DateTime
      */
-    public function getUpdatedai(): DateTime
+    public function getUpdatedat(): DateTime
     {
-        return $this->updatedai;
+        return $this->updatedat;
     }
 
     /**
-     * Set the value of updatedai
+     * Set the value of updatedat
      *
-     * @param DateTime $updatedai
+     * @param DateTime $updatedat
      *
      * @return self
      */
-    public function setUpdatedai(DateTime $updatedai): self
+    public function setUpdatedat(DateTime $updatedat): self
     {
-        $this->updatedai = $updatedai;
+        $this->updatedat = $updatedat;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setTimeStampValue(): void
+    {
+        var_dump("setTimeStampValue");
+        die;
+        $now = new DateTime();
+        if($this->createdat === null) $this->createdat = $now;
+        $this->updatedat = $now;
     }
 }

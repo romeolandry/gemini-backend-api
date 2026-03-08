@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use HWI\Bundle\OAuthBundle\Security\Http\ResourceOwnerMapInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +17,8 @@ final class HomeController extends AbstractController
 
     public function __construct(
         // private Security $security
-        private ResourceOwnerMapInterface $resourceOwnerMap
+        private ResourceOwnerMapInterface $resourceOwnerMap,
+        private readonly LoggerInterface $logger
 
     ) { }
 
@@ -24,9 +26,6 @@ final class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->redirectToRoute('api_doc');
-        // return $this->render('home/index.html.twig', [
-        //     'controller_name' => 'HomeController',
-        // ]); phpinfo(
     }
 
     #[

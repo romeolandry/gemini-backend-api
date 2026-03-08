@@ -3,6 +3,14 @@ api_platform:
     description: 'This Microservice will provide Access to KI-Model like Gemini'
     version: 1.0.0
     show_webby: false
+    ## docs_url: /api-documentations
+    use_symfony_listeners: true
+
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
 
     formats:
         jsonld:
@@ -16,28 +24,28 @@ api_platform:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
 
-    oauth:
-        # To enable or disable OAuth.
-        enabled: true
+    # oauth:
+    #     # To enable or disable OAuth.
+    #     enabled: true
 
-        # The OAuth client ID.
-        clientId: '%env(GOOGLE_CLIENT_ID)%'
+    #     # The OAuth client ID.
+    #     clientId: '%env(GOOGLE_CLIENT_ID)%'
 
-        # The OAuth client secret.
-        clientSecret: '%env(GOOGLE_CLIENT_SECRET)%'
+    #     # The OAuth client secret.
+    #     clientSecret: '%env(GOOGLE_CLIENT_SECRET)%'
 
-        # The OAuth type.
-        type: 'oauth2'
+    #     # The OAuth type.
+    #     type: 'oauth2'
 
-        # The OAuth flow grant type.
-        flow: 'application'
+    #     # The OAuth flow grant type.
+    #     flow: 'application'
 
-        # The OAuth token URL. Make sure to check the specification tokenUrl is not needed for an implicit flow.
-        tokenUrl: '/google_access_token'
+    #     # The OAuth token URL. Make sure to check the specification tokenUrl is not needed for an implicit flow.
+    #     tokenUrl: '/google_access_token'
 
-        # The OAuth authentication URL.
-        authorizationUrl: '/login/with-google'
+    #     # The OAuth authentication URL.
+    #     authorizationUrl: '/login/with-google'
 
-        # The OAuth scopes.
-        ## scopes: ["email","profile"]
-        scopes: []
+    #     # The OAuth scopes.
+    #     ## scopes: ["email","profile"]
+    #     scopes: []

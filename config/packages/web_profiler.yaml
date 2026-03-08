@@ -1,6 +1,7 @@
 when@dev:
     web_profiler:
         toolbar: true
+        excluded_ajax_paths: ^/api
 
     framework:
         profiler:

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecapsRepository::class)]
 #[ApiResource]
-class RecapsEntity
+class Recaps
 {
 
     // use TimeStampTrait;

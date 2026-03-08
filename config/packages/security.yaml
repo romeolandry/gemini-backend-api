@@ -9,34 +9,49 @@ security:
         hwi_provider:
             id: hwi_oauth.user.provider
 
+        # used to reload user from session & other features (e.g. switch_user)
+        users:
+            entity:
+                class: App\Entity\User
+                property: email
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
+        api:
+            # lazy: steatless
+            pattern: ^/api/
+            stateless: true
+            access_token:
+                provider: users
+                token_handler: App\Security\AccessTokenHandler
+
         main:
-                lazy: true
+            lazy: true
 
-                # Key of the provider defined earlier
-                provider: hwi_provider
+            # Key of the provider defined earlier
+            provider: hwi_provider
 
-                # Define the path handling the logout and where to redirect
-                logout:
-                    path: /logout
-                    target: /
+            # Define the path handling the logout and where to redirect
+            logout:
+                path: /logout
+                target: /
 
-                oauth:
-                    # Again, define the same path as in the Google Cloud Console
-                    resource_owners:
-                        google: "/login/with-google"
-                    # This is the route that will trigger the OAuth login process
-                    login_path: /connect/google
-                    use_forward: false
-                    failure_path: /login
+            oauth:
+                # Again, define the same path as in the Google Cloud Console
+                resource_owners:
+                    google: "/login/with-google"
+                # This is the route that will trigger the OAuth login process
+                login_path: /connect/google
+                use_forward: false
+                failure_path: /login
 
-                    # Service defined in HWI OAuth bundle to handle OAuth
-                    oauth_user_provider:
-                        service: hwi_oauth.user.provider
+                # Service defined in HWI OAuth bundle to handle OAuth
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -47,16 +62,31 @@ security:
     # Note: Only the *first* matching rule is applied
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-        ## /login/with-google
-        ## /login
-        - { path: ^/google_access_token, role: PUBLIC_ACCESS}
-        - { path: ^/login, roles: PUBLIC_ACCESS}
-        - { path: ^/login/with-google, roles: PUBLIC_ACCESS}
-        - { path: ^/connect/google, roles: PUBLIC_ACCESS}
-        - { path: ^/api/doc, roles: ROLE_USER }
-        - { path: ^/, roles: ROLE_USER }
-        # - { path: ^/(.+), roles: PUBLIC_ACCESS }
+        # # - { path: ^/profile, roles: ROLE_USER }
+        # ## /login/with-google
+        # ## /login
+        # - { path: ^/google_access_token, role: PUBLIC_ACCESS}
+        # - { path: ^/login, roles: PUBLIC_ACCESS}
+        # - { path: ^/login/with-google, roles: PUBLIC_ACCESS}
+        # - { path: ^/connect/google, roles: PUBLIC_ACCESS}
+        # - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
+        # ## - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI docs
+        # - { path: ^/api/docs, roles: [PUBLIC_ACCESS] }
+        # - { path: ^/api/auth-user, roles: [PUBLIC_ACCESS] }
+        # - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+        # # - { path: ^/, roles: ROLE_USER }
+        # # - { path: ^/(.+), roles: PUBLIC_ACCESS }
+        # 1. Public API endpoints
+        - { path: ^/api/(docs|auth-user), roles: PUBLIC_ACCESS }
+
+        # 2. Secure API endpoints
+        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+
+        # 3. OAuth & Login flow (Public)
+        - { path: ^/(google_access_token|login|connect/google), roles: PUBLIC_ACCESS }
+
+        # 4. Landing page
+        - { path: ^/$, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

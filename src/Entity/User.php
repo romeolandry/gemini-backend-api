@@ -7,7 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class UserEntity
+class User
 {
     use TimeStampTrait;
 

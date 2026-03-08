@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
-use HWI\Bundle\OAuthBundle\Security\Http\ResourceOwnerMap;
 use HWI\Bundle\OAuthBundle\Security\Http\ResourceOwnerMapInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -38,15 +37,16 @@ final class HomeController extends AbstractController
         $token = $this->container->get('security.token_storage')->getToken();
 
         if ($token instanceof OAuthToken) {
-            if ($token->isExpired()) {
+            if (!$token->isExpired()) {
                 // Token is dead. Redirect to login or try to refresh.
-                return $this->redirectToRoute('hwi_oauth_connect');
+                $rawToken = $token->getRawToken();
+
+                return new JsonResponse($rawToken);
             }
         }
 
-        $rawToken = $token->getRawToken();
-
-        return new JsonResponse($rawToken);
+        // redirect to auth url
+        return $this->redirectToRoute('hwi_oauth_connect');
     }
 
     public function getUserInfo($token) {

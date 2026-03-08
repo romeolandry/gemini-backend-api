@@ -32,13 +32,13 @@ class TodoList
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'id',nullable: false)]
     #[Groups(['read', 'write'])]
-    private ?UserEntity $user = null;
+    private ?User $user = null;
 
     /**
-     * @var Collection<int, TodoEntity>
+     * @var Collection<int, Todo>
      */
     #[ORM\OneToMany(
-        targetEntity: TodoEntity::class,
+        targetEntity: Todo::class,
         mappedBy: 'todoList',
         orphanRemoval: true
     )]
@@ -68,12 +68,12 @@ class TodoList
         return $this;
     }
 
-    public function getUser(): ?UserEntity
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?UserEntity $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 
@@ -81,14 +81,14 @@ class TodoList
     }
 
     /**
-     * @return Collection<int, TodoEntity>
+     * @return Collection<int, Todo>
      */
     public function getTodos(): Collection
     {
         return $this->todos;
     }
 
-    public function addTodo(TodoEntity $todo): static
+    public function addTodo(Todo $todo): static
     {
         if (!$this->todos->contains($todo)) {
             $this->todos->add($todo);
@@ -98,7 +98,7 @@ class TodoList
         return $this;
     }
 
-    public function removeTodo(TodoEntity $todo): static
+    public function removeTodo(Todo $todo): static
     {
         if ($this->todos->removeElement($todo)) {
             // set the owning side to null (unless already changed)

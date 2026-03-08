@@ -8,7 +8,7 @@ use App\Repository\TodoEntityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TodoEntityRepository::class)]
-class TodoEntity
+class Todo
 {
 
     use TimeStampTrait;
